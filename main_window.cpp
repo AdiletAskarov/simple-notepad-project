@@ -36,6 +36,8 @@ main_window::main_window()
     editor = new QTextEdit(this);
     setCentralWidget(editor);
 
+    editor->setPlaceholderText("Start typing here or open a file...");
+
     transforms.push_back(std::make_unique<uppercase_transform>());
     transforms.push_back(std::make_unique<lowercase_transform>());
     transforms.push_back(std::make_unique<capitalize_transform>());
