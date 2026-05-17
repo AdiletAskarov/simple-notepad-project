@@ -30,6 +30,8 @@ private:
     void setup_format_toolbar();
     void setup_search_menu();
     void setup_tools_menu();
+    void setup_view_menu();
+    QPalette default_palette;
 
     void open_file();
     void save_file();

@@ -31,6 +31,7 @@ main_window::main_window()
 {
     setWindowTitle("Notepad");
     resize(800, 600);
+    default_palette = this->palette();
 
     editor = new QTextEdit(this);
     setCentralWidget(editor);
@@ -47,6 +48,7 @@ main_window::main_window()
     setup_format_toolbar();
     setup_search_menu();
     setup_tools_menu();
+    setup_view_menu();
 
     if (!m_checker.load_dictionary("data/words.txt")) {
         QMessageBox::warning(this, "Warning", "Could not load data/words.txt. Spell checker will not function. Check the file location or upload a new dictionary.");
@@ -468,4 +470,34 @@ void main_window::show_context_menu(const QPoint& pos)
     }
     menu->exec(editor->mapToGlobal(pos));
     delete menu;
+}
+
+void main_window::setup_view_menu()
+{
+    auto* view_menu = menuBar()->addMenu("View");
+
+    auto* action_light_mode = view_menu->addAction("Light Mode");
+    action_light_mode->setCheckable(true);
+    action_light_mode->setShortcut(QKeySequence("Ctrl+L"));
+
+    connect(action_light_mode, &QAction::triggered, this, [this](bool checked) {
+        if (checked) {
+            QPalette light_palette;
+
+            light_palette.setColor(QPalette::Window, QColor(240, 240, 240));
+            light_palette.setColor(QPalette::WindowText, Qt::black);
+
+            light_palette.setColor(QPalette::Base, Qt::white);
+            light_palette.setColor(QPalette::Text, Qt::black);
+
+            light_palette.setColor(QPalette::Button, QColor(240, 240, 240));
+            light_palette.setColor(QPalette::ButtonText, Qt::black);
+
+            this->setPalette(light_palette);
+            editor->setPalette(light_palette);
+        } else {
+            this->setPalette(default_palette);
+            editor->setPalette(default_palette);
+        }
+    });
 }
