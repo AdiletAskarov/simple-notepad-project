@@ -2,10 +2,13 @@
 #define MAIN_WINDOW_H
 
 #include "text_transform.h"
+#include "spell_checker.h"
+#include "spell_checker_highlighter.h"
 
 #include <QDialog>
 #include <QMainWindow>
 #include <QString>
+#include <QLabel>
 #include <QTextEdit>
 #include <memory>
 #include <vector>
@@ -50,6 +53,13 @@ private:
 
     QDialog* find_replace_dlg { nullptr };
     std::unique_ptr<Ui::find_replace_dialog> find_replace_ui;
+
+    void update_cursor_position();
+    void show_context_menu(const QPoint& pos);
+
+    spell_checker m_checker;
+    spell_checker_highlighter* m_highlighter { nullptr };
+    QLabel* status_label { nullptr };
 };
 
 #endif // MAIN_WINDOW_H

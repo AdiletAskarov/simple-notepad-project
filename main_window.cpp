@@ -18,6 +18,8 @@
 #include <QTextDocument>
 #include <QTextStream>
 #include <QToolBar>
+#include <QFontDialog>
+#include <QColorDialog>
 #include <algorithm>
 #include <map>
 #include <sstream>
@@ -45,6 +47,16 @@ main_window::main_window()
     setup_format_toolbar();
     setup_search_menu();
     setup_tools_menu();
+
+    m_checker.load_dictionary("data/words.txt");
+    m_highlighter = new spell_checker_highlighter(editor->document(), m_checker);
+
+    status_label = new QLabel("Ln 1, Col 1", this);
+    statusBar()->addPermanentWidget(status_label);
+    connect(editor, &QTextEdit::cursorPositionChanged, this, &main_window::update_cursor_position);
+
+    editor->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(editor, &QTextEdit::customContextMenuRequested, this, &main_window::show_context_menu);
 }
 
 main_window::~main_window() = default;
@@ -121,6 +133,26 @@ void main_window::setup_edit_menu()
 void main_window::setup_format_menu()
 {
     auto* format_menu = menuBar()->addMenu("Format");
+
+    auto* action_font = format_menu->addAction("Font...");
+    connect(action_font, &QAction::triggered, this, [this] {
+        bool ok;
+        QFont font = QFontDialog::getFont(&ok, editor->currentFont(), this);
+        if (ok) {
+            editor->setCurrentFont(font);
+        }
+    });
+
+    auto* action_color = format_menu->addAction("Text Color...");
+    connect(action_color, &QAction::triggered, this, [this] {
+        QColor color = QColorDialog::getColor(editor->textColor(), this, "Select Text Color");
+        if (color.isValid()) {
+            editor->setTextColor(color);
+        }
+    });
+
+    format_menu->addSeparator();
+
     auto* text_case_menu = format_menu->addMenu("Text Case");
 
     for (const auto& transform : transforms) {
@@ -403,4 +435,35 @@ void main_window::show_word_frequency()
     ui.frequency_table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
     dialog->exec();
+}
+
+void main_window::update_cursor_position()
+{
+    QTextCursor cursor = editor->textCursor();
+    int line = cursor.blockNumber() + 1;
+    int col = cursor.columnNumber() + 1;
+    status_label->setText(QString("Ln %1, Col %2").arg(line).arg(col));
+}
+
+void main_window::show_context_menu(const QPoint& pos)
+{
+    QMenu* menu = editor->createStandardContextMenu();
+
+    QTextCursor cursor = editor->cursorForPosition(pos);
+    cursor.select(QTextCursor::WordUnderCursor);
+    std::string word = cursor.selectedText().toStdString();
+
+    if (!m_checker.is_correct(word)) {
+        menu->addSeparator();
+        std::vector<std::string> suggestions = m_checker.get_suggestions(word);
+
+        for (const auto& sug : suggestions) {
+            auto* action = menu->addAction(QString::fromStdString(sug));
+            connect(action, &QAction::triggered, this, [this, cursor, sug]() mutable {
+                cursor.insertText(QString::fromStdString(sug));
+            });
+        }
+    }
+    menu->exec(editor->mapToGlobal(pos));
+    delete menu;
 }
