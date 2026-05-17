@@ -500,4 +500,18 @@ void main_window::setup_view_menu()
             editor->setPalette(default_palette);
         }
     });
+
+    view_menu->addSeparator();
+
+    auto* action_zoom_in = view_menu->addAction("Zoom In");
+    action_zoom_in->setShortcuts({QKeySequence("Ctrl++"), QKeySequence("Ctrl+=")});
+    connect(action_zoom_in, &QAction::triggered, this, [this] {
+        editor->zoomIn(1);
+    });
+
+    auto* action_zoom_out = view_menu->addAction("Zoom Out");
+    action_zoom_out->setShortcut(QKeySequence::ZoomOut);
+    connect(action_zoom_out, &QAction::triggered, this, [this] {
+        editor->zoomOut(1);
+    });
 }
