@@ -48,7 +48,9 @@ main_window::main_window()
     setup_search_menu();
     setup_tools_menu();
 
-    m_checker.load_dictionary("data/words.txt");
+    if (!m_checker.load_dictionary("data/words.txt")) {
+        QMessageBox::warning(this, "Warning", "Could not load data/words.txt. Spell checker will not function. Check the file location or upload a new dictionary.");
+    }
     m_highlighter = new spell_checker_highlighter(editor->document(), m_checker);
 
     status_label = new QLabel("Ln 1, Col 1", this);
