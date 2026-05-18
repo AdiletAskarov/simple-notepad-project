@@ -556,6 +556,20 @@ void main_window::setup_view_menu()
 
     view_menu->addSeparator();
 
+    auto* action_fullscreen = view_menu->addAction("Full Screen");
+    action_fullscreen->setCheckable(true);
+    action_fullscreen->setShortcut(QKeySequence("F11"));
+
+    connect(action_fullscreen, &QAction::triggered, this, [this](bool checked) {
+        if (checked) {
+            showFullScreen();
+        } else {
+            showNormal();
+        }
+    });
+
+    view_menu->addSeparator();
+
     auto* action_antispam = view_menu->addAction("Child Protection (Anti-Spam)");
     action_antispam->setCheckable(true);
 
@@ -571,4 +585,6 @@ void main_window::setup_view_menu()
             editor->setReadOnly(false);
         });
     }
+
+
 );}
