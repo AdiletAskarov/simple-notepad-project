@@ -228,6 +228,16 @@ void main_window::setup_format_toolbar()
         editor->mergeCurrentCharFormat(fmt);
     });
 
+    auto* action_strikethrough = toolbar->addAction("S");
+    action_strikethrough->setCheckable(true);
+    action_strikethrough->setShortcut(QKeySequence("Ctrl+Shift+X"));
+
+    connect(action_strikethrough, &QAction::triggered, this, [this](bool checked) {
+        QTextCharFormat format;
+        format.setFontStrikeOut(checked);
+        editor->textCursor().mergeCharFormat(format);
+    });
+
     connect(editor, &QTextEdit::currentCharFormatChanged,
         this, [action_bold, action_italic, action_underline](const QTextCharFormat& fmt) {
             action_bold->setChecked(fmt.fontWeight() == QFont::Bold);
