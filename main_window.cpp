@@ -23,6 +23,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDateTime>
+#include <QTimer>
 #include <algorithm>
 #include <map>
 #include <sstream>
@@ -542,4 +543,22 @@ void main_window::setup_view_menu()
     connect(action_zoom_out, &QAction::triggered, this, [this] {
         editor->zoomOut(1);
     });
-}
+
+    view_menu->addSeparator();
+
+    auto* action_antispam = view_menu->addAction("Child Protection (Anti-Spam)");
+    action_antispam->setCheckable(true);
+
+    connect(editor, &QTextEdit::textChanged, this, [this, action_antispam]()
+    {
+        if (!action_antispam->isChecked() || editor->isReadOnly()) {
+            return;
+        }
+
+        editor->setReadOnly(true);
+
+        QTimer::singleShot(150, this, [this]() {
+            editor->setReadOnly(false);
+        });
+    }
+);}
