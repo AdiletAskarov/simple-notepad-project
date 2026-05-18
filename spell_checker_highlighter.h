@@ -6,8 +6,10 @@
 #include <QRegularExpression>
 #include "spell_checker.h"
 
-class spell_checker_highlighter : public QSyntaxHighlighter {
+class spell_checker_highlighter : public QSyntaxHighlighter
+{
     Q_OBJECT
+
 public:
     spell_checker_highlighter(QTextDocument* parent, const spell_checker& checker)
         : QSyntaxHighlighter(parent), m_checker(checker)
@@ -17,15 +19,18 @@ public:
     }
 
 protected:
-    void highlightBlock(const QString& text) override {
+    void highlightBlock(const QString& text) override
+    {
         QRegularExpression word_regex(R"(\b[A-Za-z]+\b)");
         auto it = word_regex.globalMatch(text);
 
-        while (it.hasNext()) {
+        while (it.hasNext())
+        {
             auto match = it.next();
             std::string word = match.captured(0).toStdString();
 
-            if (!m_checker.is_correct(word)) {
+            if (!m_checker.is_correct(word))
+            {
                 setFormat(match.capturedStart(), match.capturedLength(), m_error_format);
             }
         }

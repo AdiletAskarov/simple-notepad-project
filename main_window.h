@@ -13,12 +13,14 @@
 #include <memory>
 #include <vector>
 
-namespace Ui {
+namespace Ui
+{
     class find_replace_dialog;
     class word_frequency_dialog;
 }
 
-class main_window : public QMainWindow {
+class main_window : public QMainWindow
+{
 public:
     main_window();
     ~main_window() override;
@@ -43,25 +45,25 @@ private:
     void show_find_replace_dialog();
     void find_next(const QString& term, QTextDocument::FindFlags flags = QTextDocument::FindFlags()) const;
     void replace_current(const QString& term, const QString& replacement,
-        QTextDocument::FindFlags flags = QTextDocument::FindFlags()) const;
+                         QTextDocument::FindFlags flags = QTextDocument::FindFlags()) const;
     void replace_all(const QString& term, const QString& replacement,
-        QTextDocument::FindFlags flags = QTextDocument::FindFlags()) const;
+                     QTextDocument::FindFlags flags = QTextDocument::FindFlags()) const;
 
     void show_word_frequency();
 
-    QTextEdit* editor { nullptr };
+    QTextEdit* editor{nullptr};
     QString current_file;
     std::vector<std::unique_ptr<text_transform>> transforms;
 
-    QDialog* find_replace_dlg { nullptr };
+    QDialog* find_replace_dlg{nullptr};
     std::unique_ptr<Ui::find_replace_dialog> find_replace_ui;
 
     void update_cursor_position();
     void show_context_menu(const QPoint& pos);
 
     spell_checker m_checker;
-    spell_checker_highlighter* m_highlighter { nullptr };
-    QLabel* status_label { nullptr };
+    spell_checker_highlighter* m_highlighter{nullptr};
+    QLabel* status_label{nullptr};
 };
 
 #endif // MAIN_WINDOW_H

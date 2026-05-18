@@ -5,7 +5,8 @@
 #include <cctype>
 #include <string>
 
-class text_transform {
+class text_transform
+{
 public:
     virtual ~text_transform() = default;
 
@@ -22,7 +23,8 @@ private:
     std::string transform_name;
 };
 
-class uppercase_transform : public text_transform {
+class uppercase_transform : public text_transform
+{
 public:
     uppercase_transform()
         : text_transform("To Uppercase")
@@ -32,14 +34,16 @@ public:
     [[nodiscard]] std::string apply(const std::string& text) const override
     {
         std::string result = text;
-        std::transform(result.begin(), result.end(), result.begin(), [](const unsigned char ch) {
+        std::transform(result.begin(), result.end(), result.begin(), [](const unsigned char ch)
+        {
             return static_cast<char>(std::toupper(ch));
         });
         return result;
     }
 };
 
-class lowercase_transform : public text_transform {
+class lowercase_transform : public text_transform
+{
 public:
     lowercase_transform()
         : text_transform("To Lowercase")
@@ -49,14 +53,16 @@ public:
     [[nodiscard]] std::string apply(const std::string& text) const override
     {
         std::string result = text;
-        std::transform(result.begin(), result.end(), result.begin(), [](const unsigned char ch) {
+        std::transform(result.begin(), result.end(), result.begin(), [](const unsigned char ch)
+        {
             return static_cast<char>(std::tolower(ch));
         });
         return result;
     }
 };
 
-class capitalize_transform : public text_transform {
+class capitalize_transform : public text_transform
+{
 public:
     capitalize_transform()
         : text_transform("Capitalize Words")
@@ -67,13 +73,19 @@ public:
     {
         std::string result = text;
         bool capitalize_next = true;
-        for (auto& ch : result) {
-            if (std::isspace(static_cast<unsigned char>(ch))) {
+        for (auto& ch : result)
+        {
+            if (std::isspace(static_cast<unsigned char>(ch)))
+            {
                 capitalize_next = true;
-            } else if (capitalize_next) {
+            }
+            else if (capitalize_next)
+            {
                 ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
                 capitalize_next = false;
-            } else {
+            }
+            else
+            {
                 ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
             }
         }
@@ -81,7 +93,8 @@ public:
     }
 };
 
-class sentence_case_transform : public text_transform {
+class sentence_case_transform : public text_transform
+{
 public:
     sentence_case_transform()
         : text_transform("Sentence Case")
@@ -92,14 +105,21 @@ public:
     {
         std::string result = text;
         bool capitalize_next = true;
-        for (auto& ch : result) {
-            if (ch == '.') {
+        for (auto& ch : result)
+        {
+            if (ch == '.')
+            {
                 capitalize_next = true;
-            } else if (std::isalpha(static_cast<unsigned char>(ch))) {
-                if (capitalize_next) {
+            }
+            else if (std::isalpha(static_cast<unsigned char>(ch)))
+            {
+                if (capitalize_next)
+                {
                     ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
                     capitalize_next = false;
-                } else {
+                }
+                else
+                {
                     ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
                 }
             }
@@ -108,7 +128,8 @@ public:
     }
 };
 
-class swap_case_transform : public text_transform {
+class swap_case_transform : public text_transform
+{
 public:
     swap_case_transform()
         : text_transform("Swap Case")
@@ -118,10 +139,14 @@ public:
     [[nodiscard]] std::string apply(const std::string& text) const override
     {
         std::string result = text;
-        for (auto& ch : result) {
-            if (const auto uch = static_cast<unsigned char>(ch); std::isupper(uch)) {
+        for (auto& ch : result)
+        {
+            if (const auto uch = static_cast<unsigned char>(ch); std::isupper(uch))
+            {
                 ch = static_cast<char>(std::tolower(uch));
-            } else if (std::islower(uch)) {
+            }
+            else if (std::islower(uch))
+            {
                 ch = static_cast<char>(std::toupper(uch));
             }
         }
