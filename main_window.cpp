@@ -22,6 +22,7 @@
 #include <QColorDialog>
 #include <QPrinter>
 #include <QPrintDialog>
+#include <QDateTime>
 #include <algorithm>
 #include <map>
 #include <sstream>
@@ -148,6 +149,17 @@ void main_window::setup_edit_menu()
     auto* action_select_all = edit_menu->addAction("Select All");
     action_select_all->setShortcut(QKeySequence::SelectAll);
     connect(action_select_all, &QAction::triggered, editor, &QTextEdit::selectAll);
+
+    edit_menu->addSeparator();
+
+    auto* action_date_time = edit_menu->addAction("Time/Date");
+    action_date_time->setShortcut(QKeySequence("F5"));
+
+    connect(action_date_time, &QAction::triggered, this, [this] {
+        QString current_dt = QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss ");
+
+        editor->textCursor().insertText(current_dt);
+    });
 }
 
 void main_window::setup_format_menu()
