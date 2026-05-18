@@ -20,6 +20,8 @@
 #include <QToolBar>
 #include <QFontDialog>
 #include <QColorDialog>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <algorithm>
 #include <map>
 #include <sstream>
@@ -93,6 +95,18 @@ void main_window::setup_file_menu()
     const auto* action_save_as = file_menu->addAction("Save As...");
     connect(action_save_as, &QAction::triggered, this, [this] {
         save_file_as();
+    });
+
+    file_menu->addSeparator();
+
+    auto* action_print = file_menu->addAction("Print...");
+    action_print->setShortcut(QKeySequence::Print);
+    connect(action_print, &QAction::triggered, this, [this] {
+        QPrinter printer;
+        QPrintDialog dialog(&printer, this);
+        if (dialog.exec() == QDialog::Accepted) {
+            editor->print(&printer);
+        }
     });
 
     file_menu->addSeparator();

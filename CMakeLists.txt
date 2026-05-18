@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_PREFIX_PATH "C:/Qt/Qt/6.10.2/mingw_64")
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS PrintSupport)
 qt_standard_project_setup()
 
 qt_add_executable(
@@ -23,3 +24,4 @@ qt_add_executable(
 
 )
 target_link_libraries(notepad PRIVATE Qt6::Widgets)
+target_link_libraries(notepad PRIVATE Qt6::PrintSupport)
